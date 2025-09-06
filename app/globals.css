@@ -1,0 +1,126 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated color scheme to match AEGIS requirements - dark theme with teal/orange accents */
+  --background: #111827; /* Dark slate background */
+  --foreground: #ffffff; /* Pure white text */
+  --card: #1f2937; /* Dark card background */
+  --card-foreground: #ffffff; /* White text on cards */
+  --popover: #1f2937; /* Dark popover */
+  --popover-foreground: #ffffff; /* White text in popovers */
+  --primary: #14b8a6; /* Teal primary color */
+  --primary-foreground: #ffffff; /* White text on primary */
+  --secondary: #374151; /* Gray secondary */
+  --secondary-foreground: #ffffff; /* White text on secondary */
+  --muted: #374151; /* Muted background */
+  --muted-foreground: #9ca3af; /* Light gray muted text */
+  --accent: #f28c28; /* Orange accent color */
+  --accent-foreground: #ffffff; /* White text on accent */
+  --destructive: #dc2626; /* Red for alerts */
+  --destructive-foreground: #ffffff; /* White text on destructive */
+  --border: #374151; /* Gray borders */
+  --input: #1f2937; /* Dark input backgrounds */
+  --ring: #14b8a6; /* Teal focus ring */
+  --chart-1: #14b8a6; /* Teal chart color */
+  --chart-2: #dc2626; /* Red chart color */
+  --chart-3: #f28c28; /* Orange chart color */
+  --chart-4: #6b7280; /* Gray chart color */
+  --chart-5: #3b82f6; /* Blue chart color */
+  --radius: 0.375rem; /* 6px border radius */
+  --sidebar: #1f2937; /* Dark sidebar */
+  --sidebar-foreground: #ffffff; /* White sidebar text */
+  --sidebar-primary: #14b8a6; /* Teal sidebar primary */
+  --sidebar-primary-foreground: #ffffff; /* White text on primary sidebar */
+  --sidebar-accent: #f28c28; /* Orange sidebar accent */
+  --sidebar-accent-foreground: #ffffff; /* White text on sidebar accent */
+  --sidebar-border: #374151; /* Gray sidebar borders */
+  --sidebar-ring: #14b8a6; /* Teal sidebar focus ring */
+}
+
+.dark {
+  --background: #0f172a; /* Even darker background for dark mode */
+  --foreground: #f8fafc; /* Slightly off-white for reduced eye strain */
+  --card: #1e293b; /* Dark card background */
+  --card-foreground: #f8fafc; /* Light text on dark cards */
+  --popover: #0f172a; /* Dark popover */
+  --popover-foreground: #f8fafc; /* Light popover text */
+  --primary: #06b6d4; /* Brighter teal for dark mode visibility */
+  --primary-foreground: #0f172a; /* Dark text on bright primary */
+  --secondary: #334155; /* Darker secondary */
+  --secondary-foreground: #f8fafc; /* Light text on secondary */
+  --muted: #1e293b; /* Darker muted background */
+  --muted-foreground: #64748b; /* Medium gray muted text */
+  --accent: #fb923c; /* Brighter orange accent for dark mode */
+  --accent-foreground: #0f172a; /* Dark text on bright accent */
+  --destructive: #ef4444; /* Brighter red for dark mode alerts */
+  --destructive-foreground: #f8fafc; /* Light text on destructive */
+  --border: #334155; /* Dark borders */
+  --input: #1e293b; /* Dark input backgrounds */
+  --ring: #06b6d4; /* Brighter focus ring for dark mode */
+  --chart-1: #06b6d4; /* Bright teal for charts */
+  --chart-2: #ef4444; /* Bright red for charts */
+  --chart-3: #fb923c; /* Bright orange for charts */
+  --chart-4: #64748b; /* Medium gray for charts */
+  --chart-5: #3b82f6; /* Blue accent for charts */
+  --sidebar: #1e293b; /* Very dark sidebar */
+  --sidebar-foreground: #f8fafc; /* Light sidebar text */
+  --sidebar-primary: #06b6d4; /* Bright teal sidebar primary */
+  --sidebar-primary-foreground: #0f172a; /* Dark text on bright sidebar */
+  --sidebar-accent: #1e293b; /* Dark sidebar accent */
+  --sidebar-accent-foreground: #f8fafc; /* Light text on sidebar accent */
+  --sidebar-border: #334155; /* Dark sidebar borders */
+  --sidebar-ring: #06b6d4; /* Bright sidebar focus ring */
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
