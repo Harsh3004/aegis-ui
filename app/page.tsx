@@ -101,7 +101,7 @@ export default function AegisDashboard() {
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <p className="text-sm text-slate-400">Operator: John Smith</p>
+                <p className="text-sm text-slate-400">Operator: Harsh Joshi</p>
                 <p className="font-mono text-lg">{currentTime.toLocaleTimeString()}</p>
               </div>
               <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center">
