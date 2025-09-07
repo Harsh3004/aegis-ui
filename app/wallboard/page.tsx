@@ -85,13 +85,13 @@ export default function Wallboard() {
         </div>
 
         {/* Alert Ticker */}
-        <div className="bg-slate-800 border-t-4 border-teal-400 p-4 fixed bottom-0 left-0 right-0">
-          <div className="flex items-center gap-4">
-            <Badge variant="destructive" className="bg-red-600">CRITICAL ALERTS</Badge>
+        {/* <div className="bg-slate-800 border-t-4 border-teal-400 p-4 fixed bottom-0 left-0 right-0"> */}
+          {/* <div className="flex items-center gap-4"> */}
+            {/* <Badge variant="destructive" className="bg-red-600">CRITICAL ALERTS</Badge> */}
             {/* <AlertTimeline /> */} 
             {/* to check harsh modifications  */}
-          </div>
-        </div>
+          {/* </div> */}
+        {/* </div> */}
       </div>
     </div>
   )

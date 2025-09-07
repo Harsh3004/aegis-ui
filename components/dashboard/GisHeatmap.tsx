@@ -1,77 +1,149 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
+import { Expand, Layers } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip"
 
-const ZONES = [
-  { id: "se-wall", name: "SE Wall", risk: "HIGH", coords: "10,10,100,100" },
-  { id: "north-slope", name: "North Slope", risk: "MEDIUM", coords: "110,10,200,100" },
-  { id: "west-ramp", name: "West Ramp", risk: "LOW", coords: "210,10,300,100" },
-  { id: "east-ridge", name: "East Ridge", risk: "MEDIUM", coords: "310,10,400,100" }
+// Risk zone mock data
+const riskZones = [
+  {
+    id: 1,
+    name: "SE Wall",
+    position: [45, 120],
+    riskLevel: "High",
+    confidence: 92,
+    color: "#ef4444",
+    lastAlert: "10:42 AM"
+  },
+  {
+    id: 2,
+    name: "North Slope",
+    position: [210, 150],
+    riskLevel: "Medium",
+    confidence: 75,
+    color: "#f59e0b",
+    lastAlert: "09:58 AM"
+  },
+  {
+    id: 3, 
+    name: "West Ramp",
+    position: [320, 230],
+    riskLevel: "Clear",
+    confidence: 100,
+    color: "#22c55e",
+    lastAlert: "09:30 AM"
+  },
+  {
+    id: 4,
+    name: "East Ridge",
+    position: [150, 300],
+    riskLevel: "Monitoring",
+    confidence: 60,
+    color: "#3b82f6",
+    lastAlert: "09:15 AM"
+  }
 ]
 
-const RISK_COLORS = {
-  HIGH: "rgba(239, 68, 68, 0.5)",
-  MEDIUM: "rgba(245, 158, 11, 0.5)",
-  LOW: "rgba(34, 197, 94, 0.5)"
-}
-
 export function GisHeatmap({ onZoneClick }: { onZoneClick?: (zone: string) => void }) {
-  const [selectedZone, setSelectedZone] = useState<string | null>(null)
+  const [isFullscreen, setIsFullscreen] = useState(false)
+  const [showHeatmap, setShowHeatmap] = useState(false)
+  const [zones, setZones] = useState(riskZones)
 
-  const handleZoneClick = (zoneId: string) => {
-    setSelectedZone(zoneId)
-    onZoneClick?.(zoneId)
+  // Simulate real-time updates
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setZones(prevZones => 
+        prevZones.map(zone => ({
+          ...zone,
+          confidence: Math.max(50, Math.min(100, zone.confidence + (Math.random() * 10 - 5))),
+          lastAlert: new Date().toLocaleTimeString()
+        }))
+      )
+    }, 3000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  // Handle fullscreen toggle
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen()
+      setIsFullscreen(true)
+    } else {
+      document.exitFullscreen()
+      setIsFullscreen(false)
+    }
+  }
+
+  // Handle display mode toggle
+  const toggleDisplayMode = () => {
+    setShowHeatmap(!showHeatmap)
   }
 
   return (
-    <div className="h-[400px] w-full bg-slate-800 rounded-lg p-4">
-      <h3 className="text-xl font-bold mb-4 text-white">Mine Zone Risk Map</h3>
-      <div className="relative h-[300px] w-full">
-        <div className="absolute inset-0">
-          <Image
-            src="/placeholder.jpg"
-            alt="Mine Map"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-lg"
-          />
-        </div>
-        <svg
-          className="absolute inset-0 w-full h-full"
-          viewBox="0 0 400 300"
-          preserveAspectRatio="none"
+    <div className={`relative bg-slate-800 rounded-lg overflow-hidden transition-all duration-300 ${
+      isFullscreen ? 'fixed inset-0 z-50' : 'h-[600px] w-full'
+    }`}>
+      {/* Controls */}
+      <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={toggleDisplayMode}
+          className="relative bg-black hover:bg-black -top-1.5 left-2"
         >
-          {ZONES.map((zone) => (
-            <polygon
-              key={zone.id}
-              points={zone.coords}
-              fill={RISK_COLORS[zone.risk as keyof typeof RISK_COLORS]}
-              stroke="white"
-              strokeWidth="2"
-              className={`cursor-pointer transition-all duration-200 ${
-                selectedZone === zone.id ? "opacity-90 stroke-2" : "opacity-70 hover:opacity-90"
-              }`}
-              onClick={() => handleZoneClick(zone.id)}
+          <Layers className="h-4 w-4 mr-2" />
+          {showHeatmap ? 'Show Markers' : 'Show Heatmap'}
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={toggleFullscreen}
+          className="relative bg-black hover:bg-black -top-1.5 left-2"
+        >
+          <Expand className="h-4 w-4 mr-2" />
+          {isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+        </Button>
+      </div>
+
+      {/* Title */}
+      <div className="absolute top-4 left-4 z-10">
+        <h3 className="relative -top-3 right-2 text-xl font-bold text-white mb-2 bg-black py-2 text-center rounded-xl">
+          Mine Zone Risk Map
+        </h3>
+        <div className="flex items-center gap-2">
+          {['High', 'Medium', 'Clear', 'Monitoring'].map(level => (
+            <Badge
+              key={level}
+              variant={
+                level === 'High' ? 'destructive' :
+                level === 'Medium' ? 'secondary' :
+                level === 'Clear' ? 'outline' : 'default'
+              }
+              className={
+                level === 'High' ? 'bg-red-500/20 text-red-500' :
+                level === 'Medium' ? 'bg-yellow-500/20 text-yellow-500' :
+                level === 'Clear' ? 'bg-green-500/20 text-green-500' :
+                'bg-blue-500/20 text-blue-500'
+              }
             >
-              <title>{`${zone.name} - ${zone.risk} Risk`}</title>
-            </polygon>
+              {level}
+            </Badge>
           ))}
-        </svg>
-        <div className="absolute bottom-4 right-4 bg-slate-900 bg-opacity-80 p-2 rounded">
-          <div className="flex items-center gap-4">
-            {Object.entries(RISK_COLORS).map(([risk, color]) => (
-              <div key={risk} className="flex items-center gap-2">
-                <div
-                  className="w-4 h-4 rounded"
-                  style={{ backgroundColor: color }}
-                />
-                <span className="text-sm text-white">{risk}</span>
-              </div>
-            ))}
-          </div>
         </div>
       </div>
+
+      {/* Sketchfab iframe */}
+      <iframe
+        title="Open Pit Mine 3D Model"
+        className="w-full h-full"
+        src="https://sketchfab.com/models/bff279e206e24402ab3fdf3a0d94ba1a/embed?autostart=1&preload=1&ui_controls=0&ui_infos=0&ui_hint=0&ui_annotations=0&ui_watermark=0&ui_theme=dark"
+        allow="autoplay; fullscreen; xr-spatial-tracking"
+        style={{ background: '#1e293b' }}
+      />
+      
     </div>
   )
 }
