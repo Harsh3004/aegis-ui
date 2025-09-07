@@ -6,8 +6,21 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 
 type ForecastData = {
   time: string
+  actualTime: string
   probability: number
   threshold: number
+}
+
+const formatTimeRelative = (date: Date) => {
+  const now = new Date()
+  const diffMs = date.getTime() - now.getTime()
+  const diffMins = Math.round(diffMs / 60000)
+  
+  if (diffMins === 0) return 'Now'
+  if (diffMins < 60) return `+${diffMins}m`
+  const hours = Math.floor(diffMins / 60)
+  const mins = diffMins % 60
+  return mins > 0 ? `+${hours}h${mins}m` : `+${hours}h`
 }
 
 const generateMockForecast = () => {
@@ -15,18 +28,22 @@ const generateMockForecast = () => {
   const now = new Date()
   const threshold = 75 // Critical threshold
 
+  // Start from now and forecast forward
   for (let i = 0; i < 12; i++) {
-    const time = new Date(now.getTime() + i * 30 * 60000) // 30-minute intervals
+    const forecastTime = new Date(now.getTime() + i * 30 * 60000) // 30-minute intervals
     const baseProb = 60 + Math.random() * 20 // Base probability 60-80%
     const trend = i > 6 ? (i - 6) * 5 : 0 // Increasing trend after 6 intervals
     const noise = Math.random() * 10 - 5 // Random noise ±5%
 
     data.push({
-      time: time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      time: formatTimeRelative(forecastTime),
+      actualTime: forecastTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       probability: Math.min(100, Math.max(0, baseProb + trend + noise)),
       threshold
     })
   }
+  
+  return data
 
   return data
 }
@@ -75,11 +92,49 @@ export function ProbabilityForecast() {
                   borderRadius: '6px',
                 }}
                 labelStyle={{ color: '#94a3b8' }}
+                labelFormatter={(label, data) => {
+                  if (data && data[0]) {
+                    return `Time: ${data[0].payload.actualTime} (${data[0].payload.time})`
+                  }
+                  return label
+                }}
               />
+              <defs>
+                <linearGradient id="probGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#F28C28" stopOpacity={0.9} />
+                  <stop offset="95%" stopColor="#F28C28" stopOpacity={0.6} />
+                </linearGradient>
+                <linearGradient id="criticalGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#ef4444" stopOpacity={0.9} />
+                  <stop offset="95%" stopColor="#ef4444" stopOpacity={0.6} />
+                </linearGradient>
+              </defs>
               <Bar 
                 dataKey="probability"
-                fill={(data) => data.probability > data.threshold ? '#ef4444' : '#3b82f6'}
+                fill="url(#probGradient)"
                 radius={[4, 4, 0, 0]}
+                label={{
+                  position: 'top',
+                  fill: '#475569',
+                  fontSize: 12,
+                  formatter: (value: any) => (typeof value === 'number' ? `${Math.round(value)}%` : '')
+                }}
+                shape={(props: any) => {
+                  const { x, y, width, height, payload } = props
+                  const fill = payload.probability >= payload.threshold ? 'url(#criticalGradient)' : 'url(#probGradient)'
+                  return (
+                    <path
+                      d={`M${x},${y + height}
+                         L${x},${y + 4}
+                         Q${x},${y} ${x + 4},${y}
+                         L${x + width - 4},${y}
+                         Q${x + width},${y} ${x + width},${y + 4}
+                         L${x + width},${y + height}
+                         Z`}
+                      fill={fill}
+                    />
+                  )
+                }}
               />
               <ReferenceLine
                 y={75}
