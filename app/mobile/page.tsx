@@ -6,7 +6,10 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { AlertTriangle, Mountain, Phone, CheckCircle, WifiOff, Bell } from "lucide-react"
+import { SOSButton } from '@/components/SOSButton'
+import toast, { Toaster } from 'react-hot-toast';
 import Link from "next/link"
+import { REACT_LOADABLE_MANIFEST } from "next/dist/shared/lib/constants"
 
 export default function MobileApp() {
   const [currentTime, setCurrentTime] = useState(new Date())
@@ -27,7 +30,7 @@ export default function MobileApp() {
               <span className="text-xl font-bold">AEGIS</span>
             </div>
             <div className="flex gap-4">
-              <Link href="/" className="px-4 py-2 bg-slate-700 rounded text-white hover:bg-slate-600">
+              <Link href="/dashboard" className="px-4 py-2 bg-slate-700 rounded text-white hover:bg-slate-600">
                 Web Dashboard
               </Link>
               <Link href="/mobile" className="px-4 py-2 bg-teal-600 rounded text-white">
@@ -84,14 +87,19 @@ export default function MobileApp() {
             <CardTitle className="text-teal-400">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white">
+            <Button className="w-full bg-teal-600 hover:bg-teal-700 text-white" onClick={() => toast.success(`Acknowledge`)}>
               <CheckCircle className="h-4 w-4 mr-2" />
               Acknowledge Alert
             </Button>
-            <Button className="w-full bg-red-600 hover:bg-red-700 text-white">
+            {/* <Button className="w-full bg-red-600 hover:bg-red-700 text-white">
               <Phone className="h-4 w-4 mr-2" />
               Send SOS
-            </Button>
+            </Button> */}
+            <SOSButton 
+              recipients={['kushagrasharma231029@acropolis.in']}
+              subject="🚨 Emergency Alert: Mine Site"
+              className="w-full h-10 bg-red-600 hover:bg-red-700 text-white"
+            />  
           </CardContent>
         </Card>
 

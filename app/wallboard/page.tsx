@@ -31,7 +31,7 @@ export default function Wallboard() {
               <span className="text-xl font-bold">AEGIS</span>
             </div>
             <div className="flex gap-4">
-              <Link href="/" className="px-4 py-2 bg-slate-700 rounded text-white hover:bg-slate-600">
+              <Link href="/dashboard" className="px-4 py-2 bg-slate-700 rounded text-white hover:bg-slate-600">
                 Web Dashboard
               </Link>
               <Link href="/mobile" className="px-4 py-2 bg-slate-700 rounded text-white hover:bg-slate-600">
